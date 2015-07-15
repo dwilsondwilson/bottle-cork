@@ -651,8 +651,13 @@ class BaseCork(object):
         assert isinstance(pwd, bytes)
 
         cleartext = username + b'\0' + pwd
-        h = hashlib.pbkdf2_hmac('sha1', cleartext, salt, 10, dklen=32)
-
+        
+        if 'pbkdf2_hmac' in dir(hashlib): # try python builtin
+            h = hashlib.pbkdf2_hmac('sha1', cleartext, salt, 10, dklen=32)
+        else: # try pycrypto
+            import Crypto.Protocol.KDF
+            h = Crypto.Protocol.KDF.PBKDF2(cleartext, salt, dkLen=32, count=10)
+            
         # 'p' for PBKDF2
         hashed = b'p' + salt + h
         return b64encode(hashed)
