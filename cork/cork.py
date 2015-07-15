@@ -65,7 +65,7 @@ class BaseCork(object):
 
     def __init__(self, directory=None, backend=None, email_sender=None,
                  initialize=False, session_domain=None, smtp_server=None,
-                 smtp_url='localhost', session_key_name=None):
+                 smtp_url='localhost', session_key_name=None, preferred_hashing_algorithm=None):
         """Auth/Authorization/Accounting class
 
         :param directory: configuration directory
@@ -74,6 +74,8 @@ class BaseCork(object):
         :type users_fname: str.
         :param roles_fname: roles filename (without .json), defaults to 'roles'
         :type roles_fname: str.
+        :param preferred_hashing_algorithm: 'PBKDF2' (default) or 'scrypt'
+        :type preferred_hashing_algorithm: str.
         """
         if smtp_server:
             smtp_url = smtp_server
@@ -81,7 +83,7 @@ class BaseCork(object):
         self.password_reset_timeout = 3600 * 24
         self.session_domain = session_domain
         self.session_key_name = session_key_name or 'beaker.session'
-        self.preferred_hashing_algorithm = 'PBKDF2'
+        self.preferred_hashing_algorithm = preferred_hashing_algorithm or 'PBKDF2'
 
         # Setup JsonBackend by default for backward compatibility.
         if backend is None:
